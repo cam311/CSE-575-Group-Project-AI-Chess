@@ -40,36 +40,36 @@ def train():
     agent = ModelFreeAgent()
     board = chess.Board()
 
-    #while True:
+    while True:
         #get old state
-        #stateOld = agent.getGameState(game)
+        stateOld = agent.getGameState(game)
 
         #get move
-        #finalMove = agent.getAction(state)
+        finalMove = agent.getAction(state)
 
         #perform move and get new state
-        #reward, done, score = game.play_step(final_move)
-        #tateNew = agent.get_state(game)
+        reward, done, score = game.play_step(final_move)
+        stateNew = agent.get_state(game)
 
         #train short memory
-        #agent.trainShortMemory(state_old, final_move, reward, state_new, done)
+        agent.trainShortMemory(state_old, final_move, reward, state_new, done)
 
         #remember
-        #agent.remember(state_old, final_move, reward, state_new, done)
+        agent.remember(state_old, final_move, reward, state_new, done)
 
-        #if done:
+        if done:
             #train long memory, plot result
             
-            #board.reset()
+            board.reset()
 
-            #agent.numGames += 1
-            #agent.trainLongMemory()
+            agent.numGames += 1
+            agent.trainLongMemory()
             
-            #if score > record:
-                #record = score
-                # agent.model.save()
+            if score > record:
+                record = score
+                agent.model.save()
 
-            #print('Game', agent.n_games, 'Score', score, 'Record:', record)
+            print('Game', agent.n_games, 'Score', score, 'Record:', record)
 
 
 
