@@ -16,9 +16,10 @@ class ModelFreeAgent:
         self.epsilon = 0 #parameter to contol randomness
         self.gamma = 0 #learning/discount rate
         self.memory = deque(maxlen=MAX_MEMORY) #popleft()
+        self.temporaryEngine = chess.engine.SimpleEngine.popen_uci(r"D:\repos\CSE-575-Group-Project-AI-Chess\stockfish\stockfish-windows-x86-64-avx2.exe")
 
     def getGameState(self, game):
-        pass
+        return game.board()
 
     def remember(self, state, action, reward, nextState, gameOver):
         pass
@@ -26,53 +27,27 @@ class ModelFreeAgent:
     def trainLongMemory(self):
         pass
 
-    def trainShortMemory(self, state, acstion, reward, next_state, done):
+    def trainShortMemory(self, state, action, reward, nextState, gameOver):
         pass
-
+        
     def getAction(self, state):
-        pass
+        self.epsilon = 80 - self.numGames
+        if random.randint(0,200) < self.epsilon:
+
+            moveList = list(state.legal_moves)
+            moveIndex = random.randint(0, state.legal_moves.count() - 1)
+            move = moveList[moveIndex]
+        else:
+            result = self.temporaryEngine.play(state, chess.engine.Limit(time=0.1))
+            move = result.move
+
+        return move
+
+    def quitEngine(self):
+        self.temporaryEngine.quit()
 
 def train():
-    plotScores = []
-    plotMeanScores = []
-    totalScore = 0
-    record = 0
-    agent = ModelFreeAgent()
-    board = chess.Board()
-
-    while True:
-        #get old state
-        stateOld = agent.getGameState(game)
-
-        #get move
-        finalMove = agent.getAction(state)
-
-        #perform move and get new state
-        reward, done, score = game.play_step(final_move)
-        stateNew = agent.get_state(game)
-
-        #train short memory
-        agent.trainShortMemory(state_old, final_move, reward, state_new, done)
-
-        #remember
-        agent.remember(state_old, final_move, reward, state_new, done)
-
-        if done:
-            #train long memory, plot result
-            
-            board.reset()
-
-            agent.numGames += 1
-            agent.trainLongMemory()
-            
-            if score > record:
-                record = score
-                agent.model.save()
-
-            print('Game', agent.n_games, 'Score', score, 'Record:', record)
-
-
-
+    pass
 
 if __name__ == '__main__':
-    train()
+    pass
